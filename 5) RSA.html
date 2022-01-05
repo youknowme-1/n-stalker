@@ -1,0 +1,130 @@
+<html>
+  <head>
+    <title>RSA</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <body>
+    <center>
+      <h1>RSA Algorithm</h1>
+      <h2>Implemented Using HTML & Javascript</h2>
+      <hr />
+      <form onsubmit="event.preventDefault()">
+        <div>
+          <p>
+            Enter First Prime Number (p):<input
+              type="number"
+              placeholder=" Prime Number"
+              id="p"
+              required
+            />
+          </p>
+          <p>
+            Enter First Second Number (q):<input
+              type="number"
+              placeholder=" Prime Number"
+              id="q"
+              required
+            />
+          </p>
+          <p>
+            Enter the Message(Cipher text):[A=1, B=2,...]<input
+              type="number"
+              placeholder="message"
+              id="msg"
+            />
+          </p>
+          <input type="submit" id="apply" value="Apply RSA" onclick="RSA()" />
+        </div>
+      </form>
+      <table>
+        <tr>
+          <td>Public Key:</td>
+          <td><p id="publickey"></p></td>
+        </tr>
+        <tr>
+          <td>Exponent:</td>
+          <td><p id="exponent"></p></td>
+        </tr>
+        <tr>
+          <td>Private Key:</td>
+          <td><p id="privatekey"></p></td>
+        </tr>
+        <tr>
+          <td>Cipher Text:</td>
+          <td><p id="ciphertext"></p></td>
+        </tr>
+        <tr>
+          <td>Decrypted text:</td>
+          <td><p id="decryptedtext"></p></td>
+        </tr>
+      </table>
+    </center>
+  </body>
+  <script type="text/javascript">
+    function power(x, y, n) {
+      let res = 1;
+      while (y > 0) {
+        if (y & 1) res = res * x;
+        y = y >> 1;
+        x = x * x;
+        x = x % n;
+      }
+      return res;
+    }
+    function test_prime(n) {
+      if (n == 1) {
+        return false;
+      } else if (n == 2) {
+        return true;
+      } else {
+        for (var x = 2; x < n; x++) {
+          if (n % x == 0) {
+            return false;
+          }
+        }
+        return true;
+      }
+    }
+    function RSA() {
+      var gcd, p, q, no, n, t, e, i, x;
+      gcd = function (a, b) {
+        return !b ? a : gcd(b, a % b);
+      };
+      p = document.getElementById("p").value;
+      q = document.getElementById("q").value;
+      no = document.getElementById("msg").value;
+      if (test_prime(p) == false || test_prime(q) == false) {
+        document.getElementById("publickey").innerHTML = null;
+        document.getElementById("exponent").innerHTML = null;
+        document.getElementById("privatekey").innerHTML = null;
+        document.getElementById("ciphertext").innerHTML = null;
+        document.getElementById("decryptedtext").innerHTML = null;
+        alert("enter a prime no");
+        return false;
+      }
+      n = p * q;
+      t = (p - 1) * (q - 1);
+      for (e = 2; e < t; e++) {
+        if (gcd(e, t) == 1) {
+          break;
+        }
+      }
+      for (i = 0; i < 10; i++) {
+        x = 1 + i * t;
+        if (x % e == 0) {
+          d = x / e;
+          break;
+        }
+      }
+      ctt = power(no, e, n);
+      ct = ctt % n;
+      dtt = power(ct, d, n);
+      dt = dtt % n;
+      document.getElementById("publickey").innerHTML = n;
+      document.getElementById("exponent").innerHTML = e;
+      document.getElementById("privatekey").innerHTML = d;
+      document.getElementById("ciphertext").innerHTML = ct;
+      document.getElementById("decryptedtext").innerHTML = dt;
+    }
+  </script>
+</html>
